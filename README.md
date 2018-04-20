@@ -1,6 +1,11 @@
 # Atlas
 
-Pour commencer, créez un Agent:
+Il y a des Agent, qui peuvent rejoindre des Agence, qui proposent une liste de Mission, qui sont des actions à faire sur une liste de Cible. Pour cela il faut coder une Solution qui donne le résultat attendu pour la liste de Cible de la Mission. A chaque fois le problème est basé sur les données des Cible : elle contiennent leur nom, leur distance, leur connaissances des autres Cible, leur age, leur dangerosité.
+
+
+Il faut créer une classe avec une méthode main.
+
+Ensuite pour commencer, créez un Agent:
 ```
 Agent agent = new Agent();
 agent.nom = "Smith";
@@ -11,7 +16,7 @@ Faites le rejoindre une agence:
 ```
 agent.rejoindreAgence("Atlas");
 ```
-Les agences correspondent au niveau de difficulté: chauqe agence propose une liste de mission dans son niveau, et quand suffisament de ces missions ont été réussies on peut rejoindre l'agence suivante.
+Les agences correspondent au niveau de difficulté: chaque agence propose une liste de mission dans son niveau, et quand suffisament de ces missions ont été réussies on peut rejoindre l'agence suivante.
 
 Pour afficher les missions proposées, faire:
 ```
@@ -25,9 +30,9 @@ agent.choisirMission("Cible prioritaire");
 
 Cela affichera l'objectif de la mission choisit. Par exemple, "Pour cette mission, il y a deux cibles. Renvoyer le nom de la cible la plus proche des deux."
 
-Il faut donc coder une solution à cette mission, pour cela créer une classe qui implémente Solution, puis faire:
+Il faut donc coder une solution à cette mission, pour cela créer une classe SolutionMission1 qui implémente Solution, puis faire:
 
-    Solution solution = new ExempleSolutionMission1();
+    Solution solution = new SolutionMission1();
 
     agent.accomplirMission(solution);
     
