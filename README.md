@@ -32,7 +32,6 @@ Il faut donc coder une solution à cette mission, pour cela créer une classe qu
     agent.accomplirMission(solution);
     
 La solution doit implémenter une méthode public String resoudre(Mission mission) qui retourne sous forme de String le resultat:
-public class ExempleSolutionMission1 implements Solution {
 
 	@Override
 	public String resoudre(Mission mission) {
@@ -44,4 +43,3 @@ public class ExempleSolutionMission1 implements Solution {
 		}
 	}
 
-}
