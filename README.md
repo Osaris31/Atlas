@@ -2,14 +2,14 @@
 
 Pour commencer, créez un Agent:
 ```
-		Agent agent = new Agent();
-		agent.nom = "Smith";
-		agent.prenom = "John";
+    Agent agent = new Agent();
+    agent.nom = "Smith";
+    agent.prenom = "John";
 ```
 
 Faites le rejoindre une agence:
 ```
-		agent.rejoindreAgence("Atlas");
+    agent.rejoindreAgence("Atlas");
 ```
 Les agences correspondent au niveau de difficulté: chauqe agence propose une liste de mission dans son niveau, et quand suffisament de ces missions ont été réussies on peut rejoindre l'agence suivante.
 
@@ -27,7 +27,7 @@ Cela affichera l'objectif de la mission choisit. Par exemple, "Pour cette missio
 
 Il faut donc coder une solution à cette mission, pour cela créer une classe qui implémente Solution, puis faire:
 
-		Solution solution = new ExempleSolutionMission1();
+    Solution solution = new ExempleSolutionMission1();
 
-		agent.accomplirMission(solution);
+    agent.accomplirMission(solution);
     
