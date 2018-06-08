@@ -1,16 +1,15 @@
 package atlas;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Mission {
 
-	public Mission(String code, String objectif, int nombreCibles, Solution solutionPrevue) {
-		this.code = code;
-		this.objectif = objectif;
-		this.nombreCibles = nombreCibles;
-		this.solutionPrevue = solutionPrevue;
-
-	}
+	/**
+	 * Numéro de mission
+	 */
+	public int id;
 
 	/**
 	 * Nom de code de la mission
@@ -33,24 +32,119 @@ public class Mission {
 	 */
 	private Solution solutionPrevue;
 
+	public Mission(String code, String objectif, int nombreCibles, Solution solutionPrevue) {
+		this.code = code;
+		this.objectif = objectif;
+		this.nombreCibles = nombreCibles;
+		this.solutionPrevue = solutionPrevue;
 
-	public boolean testeSolution(Solution solution) {
+	}
+
+	private Cible[] copiescibles;
+
+	public boolean testeSolution(Solution solution, Agent agent) {
 		System.out.println("------------------------------");
 		System.out.println("Mission lancée : "+code);
 		System.out.println("------------------------------");
 
 		genererCibles();
 
-		String resultat = "";
-		String resultatAttendu = solutionPrevue.resoudre(this);
+		// on backup les cibles au cas où le programme solution modifie le tableau (exemple tri)
+		copiescibles = new Cible[cibles.length];
+		for(int i=0;i<cibles.length;i++) {
+			copiescibles[i] = cibles[i];
+		}
+
+		Object resultat = "";
+		Object resultatAttendu = solutionPrevue.resoudre(this);
+
+		cibles = copiescibles;
+
+		boolean isResultatNumeriqueAttendu = false;
+		double resultatNumeriqueAttendu = 0.0;
+		if(resultatAttendu instanceof Integer) {
+			isResultatNumeriqueAttendu = true;
+			resultatNumeriqueAttendu = ((Integer)resultatAttendu).doubleValue();
+		}
+		else if(resultatAttendu instanceof Float) {
+			isResultatNumeriqueAttendu = true;
+			resultatNumeriqueAttendu = ((Float)resultatAttendu).doubleValue();
+		}
+		else if(resultatAttendu instanceof BigInteger) {
+			isResultatNumeriqueAttendu = true;
+			resultatNumeriqueAttendu = ((BigInteger)resultatAttendu).doubleValue();
+		}
+		else if(resultatAttendu instanceof Double) {
+			isResultatNumeriqueAttendu = true;
+			resultatNumeriqueAttendu = ((Double)resultatAttendu).doubleValue();
+		}
+		else if(resultatAttendu instanceof Long) {
+			isResultatNumeriqueAttendu = true;
+			resultatNumeriqueAttendu = ((Long)resultatAttendu).doubleValue();
+		}
+		else if(resultatAttendu instanceof Object[]) {
+			String resultatTexte = "";
+			for(Object c : ((Object[])resultatAttendu)) {
+				resultatTexte+=c.toString()+"; ";
+			}
+			resultatAttendu = resultatTexte;
+		}
+		else if(resultatAttendu instanceof ArrayList) {
+			String resultatTexte = "";
+			for(Object c : ((ArrayList)resultatAttendu)) {
+				resultatTexte+=c.toString()+"; ";
+			}
+			resultatAttendu = resultatTexte;
+		}
 
 		try{
 			resultat = solution.resoudre(this);
 			System.out.println("Résultat de la mission : "+resultat);
-			if(resultat!=null && resultatAttendu.trim().toLowerCase().equals(resultat.toLowerCase().trim())) {
-				System.out.println("------------------------------");
-				System.out.println("Mission réussie!");
-				System.out.println("------------------------------");
+			if(isResultatNumeriqueAttendu) {
+				double resultatNumerique = 0.0;
+				try{
+					resultatNumerique = Double.parseDouble(resultat.toString());
+				}
+				catch(Exception e) {
+
+				}
+				if(resultat instanceof Integer) {
+					resultatNumerique = ((Integer)resultat).doubleValue();
+				}
+				else if(resultat instanceof Float) {
+					resultatNumerique = ((Float)resultat).doubleValue();
+				}
+				else if(resultat instanceof BigInteger) {
+					resultatNumerique = ((BigInteger)resultat).doubleValue();
+				}
+				else if(resultat instanceof Double) {
+					resultatNumerique = ((Double)resultat).doubleValue();
+				}
+				else if(resultat instanceof Long) {
+					resultatNumerique = ((Long)resultat).doubleValue();
+				}
+				if(resultatNumerique==resultatNumeriqueAttendu) {
+					validerMission(agent);
+
+					return true;
+				}
+			}
+			else if(resultat!=null && resultat instanceof Object[]) {
+				String resultatTexte = "";
+				for(Object c : ((Object[])resultat)) {
+					resultatTexte+=c.toString()+"; ";
+				}
+				resultat = resultatTexte;
+			}
+			else if(resultat!=null && resultat instanceof ArrayList) {
+				String resultatTexte = "";
+				for(Object c : ((ArrayList)resultat)) {
+					resultatTexte+=c.toString()+"; ";
+				}
+				resultat = resultatTexte;
+			}
+			if(resultat!=null && resultatAttendu.toString().trim().toLowerCase().equals(resultat.toString().toLowerCase().trim())) {
+				validerMission(agent);
 
 				return true;
 
@@ -66,6 +160,17 @@ public class Mission {
 		return false;
 	}
 
+	private void validerMission(Agent agent) {
+		System.out.println("------------------------------");
+		System.out.println("Mission réussie!");
+		if(!agent.missionReussies.contains(this)) { // si on avait pas encore fait cette mission, on gagne de l'xp
+			System.out.println("L'agent "+agent.nom+" "+agent.prenom+" gagne "+(this.id*1000)+" d'expérience");
+			agent.experience+=this.id*1000;
+		}
+		System.out.println("------------------------------");
+
+	}
+
 	private void genererCibles() {
 		cibles = new Cible[nombreCibles];
 		for(int i=0;i<nombreCibles;i++) {
@@ -78,7 +183,7 @@ public class Mission {
 		}
 
 		for(int i=0;i<nombreCibles;i++) {
-			int nbConnaissances = Math.abs(rand.nextInt())%(nombreCibles/3+1);
+			int nbConnaissances = Math.abs(rand.nextInt())%(nombreCibles/5+1);
 			for(int j=0;j<nbConnaissances;j++) {
 				int c = Math.abs(rand.nextInt())%nombreCibles;
 				if(i!=c && !cibles[i].connaissances.contains(cibles[c])) {
@@ -89,6 +194,7 @@ public class Mission {
 			System.out.println("Cible "+i+": ");
 			cibles[i].afficher();
 		}
+		System.out.println("------------------------------");
 	}
 
 

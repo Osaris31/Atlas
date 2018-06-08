@@ -14,7 +14,6 @@ public class Cible {
 	public void afficher() {
 		System.out.println("-> "+nom+", "+argent+" €, "+age+" ans, à "+distance+" km"+(dangereux ? ", dangereux" : "")+"");
 		if(connaissances.size()>0) System.out.println("->   Connaissances : "+connaissances);
-		System.out.println("------------------------------");
 	}
 
 	@Override

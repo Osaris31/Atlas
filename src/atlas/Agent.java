@@ -33,7 +33,7 @@ public class Agent {
 	/**
 	 * Niveau d'expérience l'agent
 	 */
-	public int niveau = 0;
+	public int experience = 0;
 
 	public void afficherMissionsDisponibles() {
 		System.out.println("------------------------------");
@@ -49,6 +49,11 @@ public class Agent {
 
 	public void choisirMission(String code) {
 		if(agence!=null) missionEnCours = agence.missionsMap.get(code.toLowerCase());
+		afficherMissionEnCours();
+	}
+
+	public void choisirMission(int id) {
+		if(agence!=null) missionEnCours = agence.missionsMapById.get(id);
 		afficherMissionEnCours();
 	}
 
@@ -69,7 +74,7 @@ public class Agent {
 		System.out.println("------------------------------");
 		System.out.println("Agent "+prenom+" "+nom);
 		System.out.println("Agence actuelle : "+(agence!=null ? agence.nom : "Aucune"));
-		System.out.println("Niveau d'expérience : "+niveau);
+		System.out.println("Niveau d'expérience : "+experience);
 		System.out.println("Mission assignée : "+(missionEnCours!=null ? missionEnCours.code : "Aucune"));
 		System.out.println("------------------------------");
 	}
@@ -80,10 +85,14 @@ public class Agent {
 
 	public void accomplirMission(Solution solution) {
 		if(missionEnCours!=null) {
-			if(missionEnCours.testeSolution(solution)) {
+			if(missionEnCours.testeSolution(solution, this)) {
 
 				missionReussies.add(missionEnCours);
 				missionEnCours = null;
+
+				if(experience>10000 && (agence==null || agence.nom.equals("Atlas"))) {
+					System.out.println("L'agence DGSE propose de vous recruter !");
+				}
 			}
 		} else {
 			System.out.println("Aucune mission en cours.");
