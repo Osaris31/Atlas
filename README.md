@@ -36,10 +36,10 @@ Il faut donc coder une solution à cette mission, pour cela créer une classe So
 
     agent.accomplirMission(solution);
     
-La solution doit implémenter une méthode public String resoudre(Mission mission) qui retourne sous forme de String le resultat:
+La solution doit implémenter une méthode public Object resoudre(Mission mission) qui retourne sous forme de String, int ou autre selon la mission, le resultat:
 
 	@Override
-	public String resoudre(Mission mission) {
+	public Object resoudre(Mission mission) {
 		if(mission.cibles[0].distance<mission.cibles[1].distance) {
 			return mission.cibles[0].nom;
 		}
